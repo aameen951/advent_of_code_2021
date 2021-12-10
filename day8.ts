@@ -1,7 +1,7 @@
 import fs from 'fs';
 
-let part_one_solution = null;
-let part_two_solution = null;
+let part_one_solution = 0;
+let part_two_solution = 0;
 
 const raw_data = fs.readFileSync("data/day8.txt", {encoding:"utf8"}).trim();
 
