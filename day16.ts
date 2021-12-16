@@ -5,7 +5,7 @@ let part_two_solution = 0;
 
 const raw_data = fs.readFileSync("data/day16.txt", {encoding:"utf8"}).trim();
 
-// INPUT PROCESSING
+/// INPUT PROCESSING
 
 /// PART ONE
 
