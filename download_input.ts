@@ -1,9 +1,8 @@
 import https from 'https';
 import fs from 'fs';
 import path from 'path';
-import url from 'url';
 
-const ROOT_PATH = path.dirname(url.fileURLToPath(import.meta.url));
+const ROOT_PATH = __dirname;
 const DATA_PATH = path.join(ROOT_PATH, "data");
 
 const extracted_year = ROOT_PATH.match(/(\d{4})[^\\/]*$/);
@@ -12,7 +11,7 @@ if(!extracted_year) {
   console.error("       Please include the year in the directory name.");
   process.exit(1);
 }
-const YEAR = extracted_year[1];
+const YEAR = parseInt(extracted_year[1]);
 const MONTH = 12; // December
 const TIME = 5; // 5:00 UTC
 
@@ -28,7 +27,7 @@ let SESSION_KEY = fs.readFileSync(session_file_path, {encoding:'utf8'}).trim();
 
 async function main(){
   const dir = fs.readdirSync(DATA_PATH);
-  const downloaded_days = new Set(dir.map(f => f.match(/^day(\d+)\.txt$/)).filter(m => m).map(m => +m[1]));
+  const downloaded_days = new Set(dir.map(f => f.match(/^day(\d+)\.txt$/)).filter(m => !!m).map(m => +m![1]));
 
   let start = new Date(Date.UTC(YEAR, MONTH - 1, 1, TIME, 0, 0, 0));
   for(let i=1; i<=25; i++)
@@ -55,9 +54,8 @@ async function main(){
 main();
 
 
-async function download_day_input(day)
-{
-  return await new Promise((resolve, reject) => {
+async function download_day_input(day: number) {
+  return await new Promise<{status: number; data: any}>((resolve, reject) => {
     https.get(`https://adventofcode.com/${YEAR}/day/${day}/input`, {
       headers:{
         "Cookie": `session=${SESSION_KEY}`,
@@ -66,13 +64,13 @@ async function download_day_input(day)
     }, (res) => {
       // console.log('statusCode:', res.statusCode);
       // console.log('headers:', res.headers);
-      const file_data = [];
+      const file_data: string[] = [];
       res.setEncoding("utf8");
       res.on('data', (d) => {
         file_data.push(d);
       });
       res.on('end', () => {
-        resolve({status:res.statusCode, data:file_data.join()});
+        resolve({status: res.statusCode!, data: file_data.join()});
       });
     }).on('error', (e) => {
       reject(e);
