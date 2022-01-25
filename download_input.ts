@@ -70,7 +70,7 @@ async function download_day_input(day: number) {
         file_data.push(d);
       });
       res.on('end', () => {
-        resolve({status: res.statusCode!, data: file_data.join()});
+        resolve({status: res.statusCode!, data: file_data.join("")});
       });
     }).on('error', (e) => {
       reject(e);
